@@ -23,3 +23,4 @@ El mensaje `OK` en el registro de `verificar` confirma que terminó la comprobac
 - [Guía de arranque y conexiones en DBeaver](Audon_BDD2/README.md)
 - [Ver el dashboard de pedidos y ventas en PDF](Audon_BDD2/Dashboard_Ecommerce.pdf)
 - [Consultas y datos de Databricks](Audon_BDD2/databricks/)
+- [Guía completa del proyecto (PDF): orden de los scripts SQL, usuarios, Databricks, respaldo y restauración](Audon_BDD2/README.pdf)
