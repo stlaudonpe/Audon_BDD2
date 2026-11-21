@@ -1,0 +1,36 @@
+name: audon-bdd2
+x-mysql: &mysql
+  image: mysql:8.0.40
+  environment:
+    MYSQL_ROOT_PASSWORD: demo_local_2026
+    MYSQL_ROOT_HOST: "%"
+  healthcheck:
+    test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysql -h 127.0.0.1 -uroot -Nse 'SELECT 1'"]
+    interval: 5s
+    timeout: 5s
+    retries: 60
+services:
+  principal:
+    <<: *mysql
+    command: ["--server-id=101","--gtid-mode=ON","--enforce-gtid-consistency=ON","--binlog-format=ROW","--binlog-do-db=ecommerce_db"]
+    ports: ["127.0.0.1:${PUERTO_PRINCIPAL:-3317}:3306"]
+    volumes:
+      - principal_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+  replica:
+    <<: *mysql
+    command: ["--server-id=102","--gtid-mode=ON","--enforce-gtid-consistency=ON","--replicate-wild-ignore-table=mysql.%","--read-only=ON"]
+    ports: ["127.0.0.1:${PUERTO_REPLICA:-3318}:3306"]
+    volumes: [replica_data:/var/lib/mysql]
+  verificar:
+    image: mysql:8.0.40
+    depends_on:
+      principal: {condition: service_healthy}
+      replica: {condition: service_healthy}
+    environment:
+      MYSQL_PWD: demo_local_2026
+    entrypoint: ["bash","/verificar.sh"]
+    volumes: ["./verificar.sh:/verificar.sh:ro"]
+volumes:
+  principal_data:
+  replica_data:

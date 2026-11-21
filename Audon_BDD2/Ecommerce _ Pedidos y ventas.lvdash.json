@@ -1,0 +1,1370 @@
+{
+  "datasets": [
+    {
+      "name": "92d5766e",
+      "displayName": "gold_pedidos_mensuales",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.gold_pedidos_mensuales",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "c16e7b32",
+      "displayName": "gold_top10_productos",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.gold_top10_productos",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "9f1aa5e2",
+      "displayName": "gold_ventas_por_categoria",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.gold_ventas_por_categoria",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "d556f2b8",
+      "displayName": "gold_ventas_mensuales",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.gold_ventas_mensuales",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "36b7dbc8",
+      "displayName": "gold_top10_clientes",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.default.gold_top10_clientes",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "71a3159a",
+      "displayName": "pedidos_confirmados_detalle",
+      "queryLines": [
+        "SELECT\r\n",
+        "    CAST(ordered_at AS DATE) AS fecha,\r\n",
+        "    customer_id,\r\n",
+        "    total_pedido,\r\n",
+        "    unidades\r\n",
+        "FROM workspace.default.silver_pedidos\r\n",
+        "WHERE estado_ultimo_pago = 'APPROVED'\r\n",
+        "  AND estado_pedido <> 'CANCELLED'"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "117175b0",
+      "displayName": "Dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "pedidos-por-mes",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "monthly(mes)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `mes`)"
+                    },
+                    {
+                      "name": "sum(pedidos)",
+                      "expression": "SUM(`pedidos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Pedidos por mes</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(mes)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(pedidos)",
+                  "axis": {
+                    "labelAngle": 0,
+                    "hideLabels": false,
+                    "hideGrid": true,
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 18,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "pedidos-totales",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "sum(pedidos)",
+                      "expression": "SUM(`pedidos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Pedidos Totales</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size: 18px;\">Pedidos recibidos en el período.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(pedidos)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "abbreviation": "none",
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "523cf100",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "sum(pedidos_cancelados)",
+                      "expression": "SUM(`pedidos_cancelados`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Pedidos Cancelados</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size: 18px;\">Pedidos que se cancelaron.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(pedidos_cancelados)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "abbreviation": "none",
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 12,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "4c815b47",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "sum(total_pedido)",
+                      "expression": "SUM(`total_pedido`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Ventas Confirmadas (Q)</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size: 18px;\">Valor de los pedidos confirmados en quetzales.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_pedido)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "GTQ",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "all"
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "de01a966",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "avg(pedidos)",
+                      "expression": "AVG(`pedidos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Promedio Mensual de Pedidos</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size: 18px;\">Pedidos por mes con actividad, en promedio.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(pedidos)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "abbreviation": "none",
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "b4cbea30",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "sum(pedidos_confirmados)",
+                      "expression": "SUM(`pedidos_confirmados`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Pedidos Confirmados</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size: 18px;\">Pedidos con pago aprobado y sin cancelación.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(pedidos_confirmados)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "abbreviation": "none",
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 6,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bf9f54bf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "92d5766e",
+                  "fields": [
+                    {
+                      "name": "max(pedidos)",
+                      "expression": "MAX(`pedidos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Máximo Mensual de pedidos</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"font-size:18px\">Mayor cantidad de pedidos en un mes.</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "light": "#393939"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(pedidos)",
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700
+                  },
+                  "format": {
+                    "abbreviation": "none",
+                    "type": "number-plain"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 6,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "top-10-productos-por-ventas-q",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c16e7b32",
+                  "fields": [
+                    {
+                      "name": "sum(ventas_q)",
+                      "expression": "SUM(`ventas_q`)"
+                    },
+                    {
+                      "name": "producto",
+                      "expression": "`producto`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 36px;font-weight: 700;line-height: 1.5;\">Top 10 Productos por Ventas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(ventas_q)",
+                  "axis": {
+                    "hideLabels": false,
+                    "hideGrid": false,
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative",
+                    "reverse": false
+                  }
+                },
+                "y": {
+                  "fieldName": "producto",
+                  "axis": {
+                    "hideLabels": false,
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 24,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "cac32132",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9f1aa5e2",
+                  "fields": [
+                    {
+                      "name": "sum(ventas_q)",
+                      "expression": "SUM(`ventas_q`)"
+                    },
+                    {
+                      "name": "categoria",
+                      "expression": "`categoria`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Ventas por Categoría</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(ventas_q)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "hideGrid": false
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "categoria",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 24,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "592aa413",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d556f2b8",
+                  "fields": [
+                    {
+                      "name": "monthly(mes)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `mes`)"
+                    },
+                    {
+                      "name": "sum(ventas_q)",
+                      "expression": "SUM(`ventas_q`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Ventas por Mes</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(mes)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "hideGrid": false
+                  },
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(ventas_q)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "hideGrid": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 18,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "2b18baf4",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "36b7dbc8",
+                  "fields": [
+                    {
+                      "name": "cliente",
+                      "expression": "`cliente`"
+                    },
+                    {
+                      "name": "sum(monto_comprado_q)",
+                      "expression": "SUM(`monto_comprado_q`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "headerAlignment": "center",
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Top 10 Clientes</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "cliente",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(monto_comprado_q)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "hideGrid": false
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 30,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "top-10-clientes",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "avg(total_pedido)",
+                      "expression": "AVG(`total_pedido`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Pedido promedio</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size:18px\">Monto promedio por pedido confirmado. </span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(total_pedido)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "GTQ",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  },
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "4ac0339f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "countdistinct(customer_id)",
+                      "expression": "COUNT(DISTINCT `customer_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Clientes con Compras</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:18px\">Clientes con al menos una compra confirmada. </span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(customer_id)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "all"
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  },
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 12,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c2683429",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "sum(unidades)",
+                      "expression": "SUM(`unidades`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:36px;font-weight:700;line-height:1.5\">Unidades Vendidas</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:18px\">Unidades en pedidos confirmados.</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(unidades)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "all"
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  },
+                  "style": {
+                    "fontSize": 48,
+                    "fontWeight": 700,
+                    "fontStyle": "normal"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 4,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "68cf7542",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "6b147c85",
+            "queries": [
+              {
+                "name": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e5ba31501f098d46df9551c8c974_fecha",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "fecha",
+                      "expression": "`fecha`"
+                    },
+                    {
+                      "name": "fecha_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "fecha",
+                    "queryName": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e5ba31501f098d46df9551c8c974_fecha"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "56450b14",
+            "queries": [
+              {
+                "name": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e5ba31501f098d46df9551c8c974_fecha",
+                "query": {
+                  "datasetName": "71a3159a",
+                  "fields": [
+                    {
+                      "name": "fecha",
+                      "expression": "`fecha`"
+                    },
+                    {
+                      "name": "fecha_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "fecha",
+                    "queryName": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e5ba31501f098d46df9551c8c974_fecha"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "dc3a42fe",
+            "queries": [
+              {
+                "name": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e579f3a91556ba244ba438643aad_categoria",
+                "query": {
+                  "datasetName": "9f1aa5e2",
+                  "fields": [
+                    {
+                      "name": "categoria",
+                      "expression": "`categoria`"
+                    },
+                    {
+                      "name": "categoria_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "categoria",
+                    "queryName": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e579f3a91556ba244ba438643aad_categoria"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "4c947969",
+            "queries": [
+              {
+                "name": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e57897c7142faef50b577af4fc30_producto",
+                "query": {
+                  "datasetName": "c16e7b32",
+                  "fields": [
+                    {
+                      "name": "producto",
+                      "expression": "`producto`"
+                    },
+                    {
+                      "name": "producto_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "producto",
+                    "queryName": "dashboards/01f1e49f2e7a1c15867286b1f34aeec3/datasets/01f1e57897c7142faef50b577af4fc30_producto"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#E6E9EA",
+        "dark": "#1E2931"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#15181C"
+      },
+      "widgetBorderColor": {
+        "light": "#F3F5F6",
+        "dark": "#21292F"
+      },
+      "fontColor": {
+        "light": "#1A2127",
+        "dark": "#EEF0F2"
+      },
+      "selectionColor": {
+        "light": "#0E7AB9",
+        "dark": "#41ADEC"
+      },
+      "visualizationColors": [
+        "#A6CEE3",
+        "#1F78B4",
+        "#B2DF8A",
+        "#33A02C",
+        "#FB9A99",
+        "#E31A1C",
+        "#FDBF6F",
+        "#FF7F00",
+        "#CAB2D6",
+        "#6A3D9A",
+        "#FFFF99",
+        "#B15928"
+      ],
+      "widgetHeaderAlignment": "LEFT",
+      "fontFamily": "Inter",
+      "widgetPadding": 16,
+      "widgetMargin": 8,
+      "widgetCornerRadius": 16,
+      "widgetShadow": 50,
+      "continuousGradient": {
+        "lightMode": {
+          "fromCategoricalIndex": 0
+        },
+        "darkMode": {
+          "fromCategoricalIndex": 0
+        }
+      },
+      "fontSettings": {
+        "base": {
+          "fontFamily": "Inter",
+          "fontColor": {
+            "light": "#1A2127",
+            "dark": "#EEF0F2"
+          },
+          "fontSize": 14,
+          "fontWeight": 400
+        },
+        "widgetTitle": {
+          "fontSize": 16,
+          "fontWeight": 500
+        },
+        "widgetDescription": {
+          "fontSize": 14,
+          "fontWeight": 400
+        },
+        "fieldTitle": {
+          "textCase": "TEXT_CASE_UPPERCASE",
+          "fontColor": {
+            "light": "#31373D",
+            "dark": "#D6D8DA"
+          },
+          "fontSize": 13,
+          "fontWeight": 400
+        },
+        "fieldValue": {
+          "fontColor": {
+            "light": "#31373D",
+            "dark": "#D6D8DA"
+          },
+          "fontSize": 13,
+          "fontWeight": 400
+        }
+      },
+      "gridLineColor": {
+        "light": "#D6D7D8",
+        "dark": "#3C3E42"
+      },
+      "axisLineColor": {
+        "light": "#B0B4B6",
+        "dark": "#555E64"
+      }
+    },
+    "applyModeEnabled": false
+  }
+}
