@@ -1,0 +1,34 @@
+R13. Restauración del respaldo de ecommerce_db
+MySQL 8.0.40 · Windows CMD · Docker en ejecución
+
+Abrir CMD en la carpeta que contiene docker-compose.yml y respaldos.
+Desde la raíz del repositorio clonado, entrar primero con: cd Audon_BDD2
+
+1. Crear una instancia de práctica independiente, con base vacía, sin puertos publicados.
+   Usar un nombre de contenedor libre. La contraseña es exclusiva de esta práctica.
+
+docker run -d --name audon-restore-r13 -e MYSQL_ROOT_PASSWORD=Demo_R13_local -e MYSQL_DATABASE=ecommerce_db mysql:8.0.40
+
+2. Esperar hasta que esta consulta devuelva 1. Si la instancia está iniciando, esperar unos segundos y repetir.
+
+docker exec -e MYSQL_PWD=Demo_R13_local audon-restore-r13 mysql -h127.0.0.1 -uroot -Nse "SELECT 1"
+
+3. Desde CMD, importar el respaldo en la base de práctica. Esperar a que vuelva el prompt y comprobar el código de salida inmediatamente. El resultado esperado es 0.
+
+docker exec -i -e MYSQL_PWD=Demo_R13_local audon-restore-r13 mysql -uroot ecommerce_db < "respaldos\ecommerce_db_20261119_002654.sql"
+echo %ERRORLEVEL%
+
+4. Comprobar los registros recuperados.
+
+docker exec -e MYSQL_PWD=Demo_R13_local audon-restore-r13 mysql -uroot ecommerce_db -e "SELECT (SELECT COUNT(*) FROM customers) AS clientes, (SELECT COUNT(*) FROM products) AS productos, (SELECT COUNT(*) FROM orders) AS pedidos, (SELECT COUNT(*) FROM order_items) AS detalles;"
+
+Conteos esperados para este respaldo: 82 clientes, 31 productos, 1289 pedidos y 2578 detalles.
+Para la evidencia, capturar el comando de verificación y sus cuatro resultados.
+
+5. Detener la instancia de práctica conservando sus datos.
+
+docker stop audon-restore-r13
+
+Para volver a abrir esta misma instancia: docker start audon-restore-r13
+
+Alcance: este archivo SQL restaura los objetos y datos presentes en el respaldo del 19 de noviembre de 2026. Los usuarios y roles del proyecto se configuran por separado con 11_roles.sql. La importación debe apuntar al contenedor de práctica indicado: el respaldo contiene sentencias DROP TABLE.
