@@ -50,3 +50,21 @@ GRANT 'rol_app_ventas' TO 'ecommerce_app'@'%';
 SET DEFAULT ROLE 'rol_app_ventas' TO 'ecommerce_app'@'%';
 
 SHOW GRANTS FOR 'ecommerce_app'@'%' USING 'rol_app_ventas';
+
+-- R11. Analista con lectura sobre vistas y resúmenes materializados.
+CREATE USER IF NOT EXISTS 'bi_analyst'@'%'
+IDENTIFIED BY 'DemoLocal_BI2026!';
+
+GRANT 'rol_reportes' TO 'bi_analyst'@'%';
+SET DEFAULT ROLE 'rol_reportes' TO 'bi_analyst'@'%';
+
+GRANT SELECT ON ecommerce_db.resumen_clientes_materializado
+TO 'bi_analyst'@'%';
+
+GRANT SELECT ON ecommerce_db.mv_daily_sales
+TO 'bi_analyst'@'%';
+
+GRANT SELECT ON ecommerce_db.mv_product_performance
+TO 'bi_analyst'@'%';
+
+SHOW GRANTS FOR 'bi_analyst'@'%' USING 'rol_reportes';
